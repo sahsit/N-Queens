@@ -1,4 +1,5 @@
 import random
+import time
 
 class nQueensCSP:
     def __init__(self, n):
@@ -17,6 +18,7 @@ class nQueensCSP:
 
     def conflicts(self, col):
         #col 
+
         count = 0
         row = self.variables[col]
         n = len(self.variables)
@@ -29,6 +31,7 @@ class nQueensCSP:
             #counts diagonal conflicting queens
             if abs(row2 - row) == abs(col2 - col) and col2!= col:
                 count+=1
+
         return count
     
     def update_conflicted_queens(self, col):
@@ -42,11 +45,10 @@ class nQueensCSP:
 
 
     def is_valid_solution(self):
-        n = len(self.variables)
-        for col in range(n):
-            if self.conflicts(col) > 0:
-                return False
-        return True
+        if self.conflicted_queens:
+            return False
+        else:
+            return True
 def print_board(state):
         n = len(state)
         for row in range(n):

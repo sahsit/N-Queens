@@ -8,6 +8,11 @@ class nQueensCSP:
         #at column 1 the queen is in row 2
         #at column 2 the queen is in row 1
         self.variables = [random.randint(0,n-1) for i in range (n) ]
+        self.conflicted_queens = set()
+        for col in range(n):
+            if self.conflicts(col) > 0:
+                self.conflicted_queens.add(col)
+
 
 
     def conflicts(self, col):
@@ -25,6 +30,17 @@ class nQueensCSP:
             if abs(row2 - row) == abs(col2 - col) and col2!= col:
                 count+=1
         return count
+    
+    def update_conflicted_queens(self, col):
+        
+        #MUST USE THIS FUNCTION AFTER MOVING ANY QUEENS
+
+        if self.conflicts(col) > 0:
+            self.conflicted_queens.add(col)
+        else:
+            self.conflicted_queens.discard(col)
+
+
     def is_valid_solution(self):
         n = len(self.variables)
         for col in range(n):

@@ -18,8 +18,10 @@ class nQueensCSP:
 
         for col2 in range(n):
             row2 = self.variables[col2]
+            #counts the amount of conflicting queens in the same row for the queen at col while ensuring it doesnt count the queen we are checking for
             if row2 == row and col2 != col:
                 count+=1
+            #counts diagonal conflicting queens
             if abs(row2 - row) == abs(col2 - col) and col2!= col:
                 count+=1
         return count
@@ -40,14 +42,7 @@ def print_board(state):
                     row_string += ". "
             print(row_string.strip()) 
     
-csp = nQueensCSP(8)
 
 
-print(csp.variables)
-num = csp.conflicts(0)
-print(num)
-print_board(csp.variables)
-solution = csp.is_valid_solution()
-print("Is valid solution: ",solution)
 
 

@@ -42,23 +42,26 @@ class nQueensCSP:
             self.conflicted_queens.add(col)
         else:
             self.conflicted_queens.discard(col)
-
+        
+        #print(f"Updated conflicted queens: {self.conflicted_queens}")
 
     def is_valid_solution(self):
         if self.conflicted_queens:
             return False
         else:
             return True
+    
+    
 def print_board(state):
-        n = len(state)
-        for row in range(n):
-            row_string = ""
-            for col in range(n):  
-                if state[col] == row:
-                    row_string += "Q "
-                else:
-                    row_string += ". "
-            print(row_string.strip()) 
+    n = len(state)
+    for row in range(n):
+        row_string = ""
+        for col in range(n):  
+            if state[col] == row:
+                row_string += "Q "
+            else:
+                row_string += ". "
+        print(row_string.strip()) 
     
 
 

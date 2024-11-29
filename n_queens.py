@@ -80,7 +80,7 @@ def find_better_position(csp, var):
     
 def main():
     start_time = time.time()
-    csp = nQueensCSP(40)
+    csp = nQueensCSP(30)
     
 
     print(csp.variables)
@@ -88,7 +88,7 @@ def main():
     print("testing select_queen: ", num)
     num_conflicts= csp.conflicts(num)
     print("number of conflicts at col",num,": ", num_conflicts)
-    solution = min_conflicts(csp, 500)
+    solution = min_conflicts(csp, 100)
     if solution:
         print(solution.variables)
     end_time = time.time()

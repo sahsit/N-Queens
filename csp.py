@@ -8,14 +8,61 @@ class nQueensCSP:
         #at column 0 the queen is in row 0
         #at column 1 the queen is in row 2
         #at column 2 the queen is in row 1
+        self.n = n
         self.variables = [random.randint(0,n-1) for i in range (n) ]
         self.conflicted_queens = set()
+        self.rows = {}
+        self.rdiags = {}
+        self.ldiags = {}
+        self.conflicts_list = []
+        
         for col in range(n):
             if self.conflicts(col) > 0:
                 self.conflicted_queens.add(col)
 
+        self.build_conflicts()
+
+    def build_conflicts(self):
+        self.rows = {}
+        self.rdiags = {}
+        self.ldiags = {}
+        self.conflicts_list = []
+        
+        for col, row in enumerate(self.variables):
+            # builds dictionaries for number of conflicts in rows, ldiagonal, and rdiagonal
+            self.rows[row] = self.rows.get(row, -1) + 1 # updates conflicts in each row by searching for that row in the self.rows dictionary, if it doesn't exist yet, it returns -1
+            self.rdiags[row - col] = self.rdiags.get(row - col, -1) + 1 
+            self.ldiags[row + col] = self.ldiags.get(row + col, -1) + 1
+
+        for col, row in enumerate(self.variables):
+            conflict_count = (self.rows.get(row, 0) + self.rdiags.get(row - col, 0) + self.ldiags.get(row + col, 0))
+            self.conflicts_list.append(conflict_count - 3) # subtract self count
 
 
+    def update_conflicts(self, col, new_row):
+        old_row = self.variables[col]
+
+        # Remove old conflicts
+        self.conflicts_list[col] = 0
+        for col2, row2 in enumerate(self.variables):
+            if col == col2:
+                continue
+
+            # Remove conflicts from old row
+            if old_row == row2 or abs(old_row - row2) == abs(col - col2):
+                self.conflicts_list[col2] -= 1
+
+            # Add conflicts from new row
+            if new_row == row2 or abs(new_row - row2) == abs(col - col2):
+                self.conflicts_list[col2] += 1
+                self.conflicts_list[col] += 1
+
+            # Update the queen's position
+            self.variables[col] = new_row
+            
+            
+
+    
     def conflicts(self, col):
         #col 
 

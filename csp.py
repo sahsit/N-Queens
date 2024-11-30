@@ -8,78 +8,43 @@ class nQueensCSP:
         #at column 0 the queen is in row 0
         #at column 1 the queen is in row 2
         #at column 2 the queen is in row 1
+        
         self.n = n
+        
+        # list to keep track of conflicts in each row
+        self.row_conflicts = [0] * n     
+        
+        # list to keep track of conflicts in each right diagonal (top left to bottom right)
+        # row-col will be the same number for each element that is in the same diagonal
+        # the min number that row-col could be is 0 - (n-1) = -(n-1) and the max number is (n-1) - 0 = n-1
+        # so the range is -(n-1) to n-1 which is 2*n-1 (the size of this list) 
+        self.rdiag_conflicts = [0] * (2 * n - 1)
+        
+        # list to keep track of conflicts in each left diagonal (top right to bottom left)
+        self.ldiag_conflicts = [0] * (2 * n - 1)
         self.variables = [random.randint(0,n-1) for i in range (n) ]
         self.conflicted_queens = set()
-        self.rows = {}
-        self.rdiags = {}
-        self.ldiags = {}
-        self.conflicts_list = []
+       
         
+        # for each column on the board, this updates and tracks how many queens are in conflict in every row, rdiag, and ldiag
         for col in range(n):
+            row = self.variables[col]
+            # adding a conflict to the row the queen is in 
+            self.row_conflicts[row] += 1
+            # adding a conflict to the right diag the queen is in
+            self.rdiag_conflicts[row-col + (n-1)] += 1
+            # adding a conflict to the left diag the queen is in
+            self.ldiag_conflicts[row+col] += 1
             if self.conflicts(col) > 0:
                 self.conflicted_queens.add(col)
 
-        self.build_conflicts()
-
-    def build_conflicts(self):
-        self.rows = {}
-        self.rdiags = {}
-        self.ldiags = {}
-        self.conflicts_list = []
-        
-        for col, row in enumerate(self.variables):
-            # builds dictionaries for number of conflicts in rows, ldiagonal, and rdiagonal
-            self.rows[row] = self.rows.get(row, -1) + 1 # updates conflicts in each row by searching for that row in the self.rows dictionary, if it doesn't exist yet, it returns -1
-            self.rdiags[row - col] = self.rdiags.get(row - col, -1) + 1 
-            self.ldiags[row + col] = self.ldiags.get(row + col, -1) + 1
-
-        for col, row in enumerate(self.variables):
-            conflict_count = (self.rows.get(row, 0) + self.rdiags.get(row - col, 0) + self.ldiags.get(row + col, 0))
-            self.conflicts_list.append(conflict_count - 3) # subtract self count
-
-
-    def update_conflicts(self, col, new_row):
-        old_row = self.variables[col]
-
-        # Remove old conflicts
-        self.conflicts_list[col] = 0
-        for col2, row2 in enumerate(self.variables):
-            if col == col2:
-                continue
-
-            # Remove conflicts from old row
-            if old_row == row2 or abs(old_row - row2) == abs(col - col2):
-                self.conflicts_list[col2] -= 1
-
-            # Add conflicts from new row
-            if new_row == row2 or abs(new_row - row2) == abs(col - col2):
-                self.conflicts_list[col2] += 1
-                self.conflicts_list[col] += 1
-
-            # Update the queen's position
-            self.variables[col] = new_row
-            
-            
-
     
     def conflicts(self, col):
-        #col 
-
-        count = 0
         row = self.variables[col]
-        n = len(self.variables)
+        # since we already counted the conflicts in init, we just have to add them together
+        # subtract 3 because it counted itself 3 times while adding the three categories together
+        return (self.row_conflicts[row] + self.ldiag_conflicts[row - col] + self.rdiag_conflicts[row + col] - 3) 
 
-        for col2 in range(n):
-            row2 = self.variables[col2]
-            #counts the amount of conflicting queens in the same row for the queen at col while ensuring it doesnt count the queen we are checking for
-            if row2 == row and col2 != col:
-                count+=1
-            #counts diagonal conflicting queens
-            if abs(row2 - row) == abs(col2 - col) and col2!= col:
-                count+=1
-
-        return count
     
     def update_conflicted_queens(self, col):
         
@@ -98,6 +63,25 @@ class nQueensCSP:
         else:
             return True
     
+    
+    def move_queen(self, col, new_row):
+        # storing original row queen was in
+        old_row = self.variables[col]
+        
+        # subtracting one conflict from each category now that the queen is being moved
+        self.row_conflicts[old_row] -= 1
+        self.rdiag_conflicts[old_row - col] -= 1
+        self.ldiag_conflicts[old_row + col] -= 1
+    
+        # move the queen to new_row 
+        self.variables[col] = new_row
+        
+        # adding conflict in the new position's categories
+        self.row_conflicts[new_row] += 1
+        self.rdiag_conflicts[new_row - col] += 1
+        self.ldiag_conflicts[new_row + col] += 1
+    
+        self.update_conflicted_queens(col)
     
 def print_board(state):
     n = len(state)

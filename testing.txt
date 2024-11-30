@@ -229,3 +229,22 @@ Step 0: 26 queens still in conflict
 Solution found in 41 steps
 [1, 26, 11, 7, 28, 23, 29, 9, 16, 2, 13, 22, 25, 27, 8, 14, 5, 3, 18, 24, 10, 4, 20, 15, 21, 6, 0, 12, 19, 17]
 Execution time: 0.45 seconds
+
+TEST 3: 50 QUEENS WITH 500 MAX_STEPS (restarted many many times)
+
+Step 0: 46 queens still in conflict (T=950.00)
+Step 50: 16 queens still in conflict (T=73.10)
+Step 100: 4 queens still in conflict (T=5.62)
+Step 150: 4 queens still in conflict (T=0.43)
+Step 200: 4 queens still in conflict (T=0.03)
+Step 250: 4 queens still in conflict (T=0.00)
+Step 300: 4 queens still in conflict (T=0.00)
+Step 350: 4 queens still in conflict (T=0.00)
+Step 400: 4 queens still in conflict (T=0.00)
+Step 450: 4 queens still in conflict (T=0.00)
+Restart due to no progress.
+Step 0: 43 queens still in conflict (T=950.00)
+Step 50: 11 queens still in conflict (T=73.10)
+Solution found in 74 steps
+[36, 26, 15, 25, 14, 28, 39, 7, 3, 16, 13, 42, 1, 29, 8, 11, 44, 18, 47, 21, 19, 9, 2, 31, 33, 45, 30, 24, 40, 43, 49, 12, 23, 5, 0, 41, 10, 48, 20, 22, 38, 46, 27, 6, 4, 37, 17, 34, 32, 35]
+Execution time: 64.28 seconds

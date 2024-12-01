@@ -1,3 +1,4 @@
+
 import random
 import time
 
@@ -37,50 +38,79 @@ class nQueensCSP:
             self.ldiag_conflicts[row+col] += 1
             if self.conflicts(col) > 0:
                 self.conflicted_queens.add(col)
+        
+        # CONFLICT LISTS ARE ALL CORRECT 
+        # print("row_conflicts list:", self.row_conflicts) 
+        # print("rdiag_conflicts list:", self.rdiag_conflicts) 
+        # print("ldiag_conflicts list:", self.ldiag_conflicts) 
 
     
     def conflicts(self, col):
+
         row = self.variables[col]
-        # since we already counted the conflicts in init, we just have to add them together
-        # subtract 3 because it counted itself 3 times while adding the three categories together
-        return (self.row_conflicts[row] + self.ldiag_conflicts[row - col] + self.rdiag_conflicts[row + col] - 3) 
+        rdiag_index = row - col + (self.n - 1)
+        ldiag_index = row + col
+
+
+        total_conflicts = (
+            self.row_conflicts[row] - 1 +
+            self.ldiag_conflicts[ldiag_index] - 1 +
+            self.rdiag_conflicts[rdiag_index] - 1
+        )
+        
+        return total_conflicts
+
 
     
     def update_conflicted_queens(self, col):
+        self.conflicted_queens.clear()
         
-        #MUST USE THIS FUNCTION AFTER MOVING ANY QUEENS
+        # Reassess conflicts for all queens
+        for col in range(self.n):
+            if self.conflicts(col) > 0:
+                self.conflicted_queens.add(col)
 
-        if self.conflicts(col) > 0:
-            self.conflicted_queens.add(col)
-        else:
-            self.conflicted_queens.discard(col)
         
         #print(f"Updated conflicted queens: {self.conflicted_queens}")
 
     def is_valid_solution(self):
-        if self.conflicted_queens:
-            return False
-        else:
-            return True
+        for col in range(self.n):
+            if self.conflicts(col) > 0:
+                return False
+        return True
     
     
     def move_queen(self, col, new_row):
+    
+
         # storing original row queen was in
         old_row = self.variables[col]
+        rdiag_index = old_row - col + (self.n - 1)
+        ldiag_index = old_row + col
+        
         
         # subtracting one conflict from each category now that the queen is being moved
         self.row_conflicts[old_row] -= 1
-        self.rdiag_conflicts[old_row - col] -= 1
-        self.ldiag_conflicts[old_row + col] -= 1
+        self.rdiag_conflicts[rdiag_index] -= 1
+        self.ldiag_conflicts[ldiag_index] -= 1
+    
     
         # move the queen to new_row 
         self.variables[col] = new_row
+        rdiag_index = new_row - col + (self.n - 1)
+        ldiag_index = new_row + col
+        
         
         # adding conflict in the new position's categories
         self.row_conflicts[new_row] += 1
-        self.rdiag_conflicts[new_row - col] += 1
-        self.ldiag_conflicts[new_row + col] += 1
+        self.rdiag_conflicts[rdiag_index] += 1
+        self.ldiag_conflicts[ldiag_index] += 1
     
+
+        print(f"Moving queen from row {old_row} to row {new_row} in column {col}")
+
+
+        #print(f"queen is now at {self.conflicted_queens[col]}")
         self.update_conflicted_queens(col)
     
 def print_board(state):
@@ -94,7 +124,3 @@ def print_board(state):
                 row_string += ". "
         print(row_string.strip()) 
     
-
-
-
-

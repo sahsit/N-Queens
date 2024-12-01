@@ -5,6 +5,7 @@ import time
 import math
 
 def select_conflicted_queen(csp):
+
     # randomly selects conflicted queen to move for min_conflicts function
     if csp.conflicted_queens:
         #print(f"Conflicted queens: {csp.conflicted_queens}")
@@ -16,6 +17,8 @@ def select_conflicted_queen(csp):
 def min_conflicts(csp, max_steps):
     current = csp
 
+    print(f"Starting conflicted queens before any solution: {current.conflicted_queens}")
+
     for i in range(max_steps):
         T = len(current.variables) * 500 # set starting temperature high
         # cooling_rate = 0.95 # temperature should be decreased by T*0.95 every step
@@ -25,9 +28,12 @@ def min_conflicts(csp, max_steps):
             print(f"Solution found in {i} steps")
             return current
 
+        
         # select a random conflicted queen (returns the column of that conflicted queen)
         var = select_conflicted_queen(current)
         # counts current number of conflicts to compare later
+        
+        
         current_conflicts = csp.conflicts(var)
                 
         # find better position to put the queen (position that minimizes conflicts)
@@ -37,6 +43,7 @@ def min_conflicts(csp, max_steps):
         
         # call move_queen to move the queen to "new_value" and update the row and diagonal conflicts
         current.move_queen(var, new_value)
+        
         # count number of conflicts that we'd have if we moved the queen to the new position
         new_conflicts = csp.conflicts(var)
         
@@ -60,7 +67,7 @@ def min_conflicts(csp, max_steps):
             T *= 0.8
             
         # Print every 50 steps
-        if i % 50 == 0:  
+        if i % 10000 == 0:  
             print(f"Step {i}: {len(current.conflicted_queens)} queens still in conflict (T={T:.2f})")
         
     # if the algo hasn't made any progress in max_steps, it restarts with another configuration 
@@ -68,7 +75,10 @@ def min_conflicts(csp, max_steps):
     return min_conflicts(nQueensCSP(len(csp.variables)), max_steps)
 
 
+
 def find_better_position(csp, var):
+
+    
     n = len(csp.variables)
     min_conflicts = float('inf')
     best_positions = [] # list to store best candidates for positions  
@@ -93,7 +103,11 @@ def find_better_position(csp, var):
             best_positions.append(row)
 
     # the row choice is randomly picked from this list to maintain variability
-    return random.choice(best_positions)
+    random_choice = random.choice(best_positions)
+
+    return random_choice
+
+
     
 def main():
     start_time = time.time()
@@ -102,10 +116,15 @@ def main():
     csp = nQueensCSP(10000)
 
     # print all queens's positions on board
-    print(csp.variables)
+    print("starting positions: ", csp.variables)
+    
+    # print("queens in conflict in col 1: ", csp.conflicts(0)) 
+    # print("queens in conflict in col 2: ", csp.conflicts(1)) 
+    # print("queens in conflict in col 3: ", csp.conflicts(2)) 
+    # print("queens in conflict in col 4: ", csp.conflicts(3)) 
     
     # call min_conflicts to solve the CSP
-    solution = min_conflicts(csp, 20000)
+    solution = min_conflicts(csp, 10000)
     
     # print the queens's positions after board was solved
     if solution:
@@ -113,8 +132,17 @@ def main():
     end_time = time.time()
     # print_board(csp.variables)
     
-    print(csp.is_valid_solution())
-    # print("Is valid solution: ",solution)
+    # should be nothing - set()
+    print(f"Final conflicted queens: {csp.conflicted_queens}")
+
+    
+    # print("queens in conflict in col 1: ", csp.conflicts(0)) 
+    # print("queens in conflict in col 2: ", csp.conflicts(1)) 
+    # print("queens in conflict in col 3: ", csp.conflicts(2)) 
+    # print("queens in conflict in col 4: ", csp.conflicts(3)) 
+    
+    
+    print("solution check: ", csp.is_valid_solution())
     print(f"Execution time: {end_time - start_time:.2f} seconds")
 
 

@@ -113,7 +113,7 @@ def main():
     start_time = time.time()
     
     # creates instance of CSP with a certain nxn board
-    csp = nQueensCSP(10000)
+    csp = nQueensCSP(1000)
 
     # print all queens's positions on board
     print("starting positions: ", csp.variables)

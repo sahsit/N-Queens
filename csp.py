@@ -74,10 +74,10 @@ class nQueensCSP:
         #print(f"Updated conflicted queens: {self.conflicted_queens}")
 
     def is_valid_solution(self):
-        for col in range(self.n):
-            if self.conflicts(col) > 0:
-                return False
-        return True
+        if self.conflicted_queens:
+            return False
+        else:
+            return True
     
     
     def move_queen(self, col, new_row):
